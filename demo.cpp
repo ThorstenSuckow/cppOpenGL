@@ -61,6 +61,11 @@ void run_program_2(GLFWwindow* window) {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
+	// enable wireframe mode
+	cout << "Enabling wireframe mode.\n";
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+
 	while (!glfwWindowShouldClose(window)) {
 
 		processInput(window);
@@ -70,6 +75,7 @@ void run_program_2(GLFWwindow* window) {
 
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -108,6 +114,7 @@ void run_program_1(GLFWwindow* window) {
 
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindVertexArray(0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
