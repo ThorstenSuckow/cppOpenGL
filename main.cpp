@@ -25,19 +25,37 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 }
 
+void run(unsigned int progId, GLFWwindow* window) {
+	switch (progId) {
+	case 1:
+		program1(window);
+		break;
+	case 2:
+		program2(window);
+		break;
+	case 3:
+		program3(window);
+		break;
+	}
+}
 
-string select_program() {
+int select_program() {
+
 	cout << "Please specify the program to run:\n\n";
 	cout << "(1) Lesson 1-1: Triangle drawing (glDrawArrays)\n";
 	cout << "(2) Lesson 1-2: Triangle drawing indexed (glDrawElements)\n";
-	cout << "(q to quit)\n\n";
+	cout << "(3) Lesson 1-3: Clockwise GL_TRIANGLE_STRIP\n";
+	cout << "(anything else: exit)\n\n";
 
-	string option;
+	int option;
 
 	cin >> option;
 
-	if (option != "q") {
-		cout << "running " + option + "...\n";
+	if (option > 0 && option <= 3) {
+		string progid = to_string(option);
+		cout << "running " + progid + "...\n";
+	} else {
+		option = 0;
 	}
 	
 	return option;
@@ -45,9 +63,9 @@ string select_program() {
 
 int main() {
 
-	string option = select_program();
+	int option = select_program();
 
-	if (option == "q") {
+	if (option == 0) {
 		return 0;
 	}
 
@@ -80,13 +98,8 @@ int main() {
 
 	glUseProgram(shaderProgram);
 	
-	if (option == "1") {
-		program1(window);
-	}
-	else {
-		program2(window);
-	}
-
+	run(option, window);
+	
 	glfwTerminate();
 
 	main();

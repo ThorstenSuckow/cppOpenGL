@@ -36,7 +36,6 @@ export void program2(GLFWwindow* window) {
 
 	unsigned int EBO;
 	glGenBuffers(1, &EBO);
-
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
