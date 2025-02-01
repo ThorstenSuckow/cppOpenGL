@@ -77,7 +77,6 @@ int main() {
 	GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Demo", NULL, NULL);
 
 	if (window == NULL) {
-
 		std::cout << "Failed to creat GLFW window" << std::endl;
 		glfwTerminate();
 		return -1;

@@ -3,15 +3,42 @@ module;
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <imgui.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
 
 import GLFWUtil;
 
 
 export module cppOpenGL.Demos:Program3;
 
+import ImGuiUtil;
+
 using namespace std;
 
+
+void renderImGui(unsigned short &selection) {
+    ImGui::Begin("Program3");
+
+    ImGui::Text("Set GL_CULL_FACE-value:");
+
+    if (ImGui::RadioButton("GL_FRONT", selection == GL_FRONT)) {
+        selection = GL_FRONT;
+    }
+    if (ImGui::RadioButton("GL_BACK", selection == GL_BACK)) {
+        selection = GL_BACK;
+    }
+    if (ImGui::RadioButton("GL_FRONT_AND_BACK", selection == GL_FRONT_AND_BACK)) {
+        selection = GL_FRONT_AND_BACK;
+    }
+
+    
+    ImGui::End();
+}
+
 export void program3(GLFWwindow* window) {
+
+    ImGuiUtil::init(window);
 
     float vertices[] = {
         -0.25f, 0.0f, 0.0f,
@@ -48,9 +75,20 @@ export void program3(GLFWwindow* window) {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
+    unsigned short selection = 0;
     while (!glfwWindowShouldClose(window)) {
-        GLFWUtil::processInput(window);
 
+        GLFWUtil::processInput(window);
+        glfwPollEvents();
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        
+        renderImGui(selection);
+
+        glCullFace(selection);
+        
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -58,9 +96,12 @@ export void program3(GLFWwindow* window) {
         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwSwapBuffers(window);
-        glfwPollEvents();
     }
 
+    ImGuiUtil::shutdown();
 
 }
