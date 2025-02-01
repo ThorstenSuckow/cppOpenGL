@@ -2,3 +2,5 @@
 /*.vcxproj
 /*.filters
 /*.user
+/vendor
+/imgui.ini
