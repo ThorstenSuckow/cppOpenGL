@@ -61,8 +61,14 @@ export void program3(GLFWwindow* window) {
     cout << "to be invisible.\n";
     
     
+ 
     map<string, unsigned int> settings = {
-        {"GL_CULL_FACE", 0x0000}
+        {"GL_CULL_FACE", 0x0000},
+        /**
+         * solely relying on a 16 bit value for the shift operation is risky, 
+         * but'l do for now
+         */
+        {"GL_POLYGON_MODE", (GL_FRONT_AND_BACK << 16) | GL_POINT}
     };
 
     while (!glfwWindowShouldClose(window)) {

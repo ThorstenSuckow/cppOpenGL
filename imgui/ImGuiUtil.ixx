@@ -3,6 +3,7 @@ module;
 #include <imgui.h>
 #include <map>
 #include <string>
+#include <iostream>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <glad/glad.h>
@@ -11,6 +12,49 @@ module;
 export module ImGuiUtil;
 
 using namespace std;
+
+void polygonModeOptions(map<string, unsigned int>& settings) {
+
+
+    ImGui::Text("GL_POLYGON_MODE");
+
+    const char* items[] = { "GL_FRONT", "GL_BACK", "GL_FRONT_AND_BACK", "GL_FILL", "GL_LINE", "GL_POINT"};
+    static int selectedItem_lft = 0;
+    if (ImGui::BeginCombo("##select_GL_POLYGON_MODE_lft", items[selectedItem_lft])) {
+        for (int i = 0; i < 3; ++i) {
+            bool isSelected = (selectedItem_lft == i);
+            if (ImGui::Selectable(items[i], isSelected)) {
+                selectedItem_lft = i;
+            }
+        }
+        ImGui::EndCombo();
+        settings["GL_POLYGON_MODE"] = (selectedItem_lft == 0 ? GL_FRONT : (selectedItem_lft == 1 ? GL_BACK : GL_FRONT_AND_BACK)) << 16;
+    }
+
+    
+
+    static int selectedItem_rgt = 3;
+    if (ImGui::BeginCombo("##select_GL_POLYGON_MODE_rgt", items[selectedItem_rgt])) {
+        for (int i = 3; i < 6; ++i) {
+            bool isSelected = (selectedItem_rgt == i);
+            if (ImGui::Selectable(items[i], isSelected)) {
+                selectedItem_rgt = i;
+            }
+        }
+        ImGui::EndCombo();
+        settings["GL_POLYGON_MODE"] = (settings["GL_POLYGON_MODE"] & 0xFFFF0000)
+            | (selectedItem_rgt == 3 ? GL_FILL : (selectedItem_rgt == 4 ? GL_LINE : GL_POINT));
+    }
+ 
+    
+
+    unsigned int polygonMode = settings["GL_POLYGON_MODE"];
+    unsigned short lft = (settings["GL_POLYGON_MODE"] >> 16);
+    unsigned short rgt = settings["GL_POLYGON_MODE"];
+    
+    glPolygonMode(lft, rgt);
+
+}
 
 
 void cullFaceOptions(map<string, unsigned int>& settings) {
@@ -54,6 +98,7 @@ export namespace ImGuiUtil {
     void addGlobalRenderOptions(map<string, unsigned int>& settings) {
 
         if (ImGui::TreeNodeEx("Global Render Options", ImGuiTreeNodeFlags_DefaultOpen)) {
+            polygonModeOptions(settings);
             cullFaceOptions(settings);
             ImGui::TreePop();
         }
