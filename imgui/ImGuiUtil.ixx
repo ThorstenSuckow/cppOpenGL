@@ -16,44 +16,51 @@ using namespace std;
 void polygonModeOptions(map<string, unsigned int>& settings) {
 
 
+    unsigned int polygonMode = settings["GL_POLYGON_MODE"];
+    unsigned short lft = (settings["GL_POLYGON_MODE"] >> 16);
+    unsigned short rgt = settings["GL_POLYGON_MODE"];
+
     ImGui::Text("GL_POLYGON_MODE");
 
+
     const char* items[] = { "GL_FRONT", "GL_BACK", "GL_FRONT_AND_BACK", "GL_FILL", "GL_LINE", "GL_POINT"};
-    static int selectedItem_lft = 0;
+    static int selectedItem_lft = lft == GL_FRONT ? 0 : (lft == GL_BACK ? 1 : 2);
     if (ImGui::BeginCombo("##select_GL_POLYGON_MODE_lft", items[selectedItem_lft])) {
         for (int i = 0; i < 3; ++i) {
             bool isSelected = (selectedItem_lft == i);
             if (ImGui::Selectable(items[i], isSelected)) {
                 selectedItem_lft = i;
             }
+            if (isSelected) {
+                ImGui::SetItemDefaultFocus();
+            }
         }
         ImGui::EndCombo();
-        settings["GL_POLYGON_MODE"] = (selectedItem_lft == 0 ? GL_FRONT : (selectedItem_lft == 1 ? GL_BACK : GL_FRONT_AND_BACK)) << 16;
     }
+    settings["GL_POLYGON_MODE"] = (selectedItem_lft == 0 ? GL_FRONT : (selectedItem_lft == 1 ? GL_BACK : GL_FRONT_AND_BACK)) << 16;
 
-    
-
-    static int selectedItem_rgt = 3;
+    static int selectedItem_rgt = rgt == GL_FILL ? 3 : (rgt == GL_LINE ? 4 : GL_POINT);
     if (ImGui::BeginCombo("##select_GL_POLYGON_MODE_rgt", items[selectedItem_rgt])) {
         for (int i = 3; i < 6; ++i) {
             bool isSelected = (selectedItem_rgt == i);
             if (ImGui::Selectable(items[i], isSelected)) {
                 selectedItem_rgt = i;
             }
+            if (isSelected) {
+                ImGui::SetItemDefaultFocus();
+            }
         }
         ImGui::EndCombo();
-        settings["GL_POLYGON_MODE"] = (settings["GL_POLYGON_MODE"] & 0xFFFF0000)
-            | (selectedItem_rgt == 3 ? GL_FILL : (selectedItem_rgt == 4 ? GL_LINE : GL_POINT));
     }
- 
-    
+    settings["GL_POLYGON_MODE"] = (settings["GL_POLYGON_MODE"] & 0xFFFF0000)
+        | (selectedItem_rgt == 3 ? GL_FILL : (selectedItem_rgt == 4 ? GL_LINE : GL_POINT));
 
-    unsigned int polygonMode = settings["GL_POLYGON_MODE"];
-    unsigned short lft = (settings["GL_POLYGON_MODE"] >> 16);
-    unsigned short rgt = settings["GL_POLYGON_MODE"];
+    polygonMode = settings["GL_POLYGON_MODE"];
+    lft = (settings["GL_POLYGON_MODE"] >> 16);
+    rgt = settings["GL_POLYGON_MODE"];
+    
     
     glPolygonMode(lft, rgt);
-
 }
 
 
@@ -98,10 +105,13 @@ export namespace ImGuiUtil {
     void addGlobalRenderOptions(map<string, unsigned int>& settings) {
 
         if (ImGui::TreeNodeEx("Global Render Options", ImGuiTreeNodeFlags_DefaultOpen)) {
-            polygonModeOptions(settings);
+            ImGui::Spacing();
             cullFaceOptions(settings);
+            ImGui::Spacing();
+            polygonModeOptions(settings);
             ImGui::TreePop();
         }
+
     }
 
 
