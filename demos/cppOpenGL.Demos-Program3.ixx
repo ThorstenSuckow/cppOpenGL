@@ -55,16 +55,18 @@ export void program3(GLFWwindow* window) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
- 
+    unsigned int color = 0x00000000;
     map<string, unsigned int> settings = {
         {"GL_CULL_FACE", 0x0000},
         /**
          * solely relying on a 16 bit value for the shift operation is risky, 
          * but'l do for now
          */
-        {"GL_POLYGON_MODE", (GL_FRONT_AND_BACK << 16) | GL_FILL}
-    };
+        {"GL_POLYGON_MODE", (GL_FRONT_AND_BACK << 16) | GL_FILL},
 
+        {"GL_CLEAR_COLOR", (color | (51 << 24) | (76 << 16) | (76 << 8) | 255)}
+    };
+    
     while (!glfwWindowShouldClose(window)) {
 
         GLFWUtil::processInput(window);
@@ -76,7 +78,14 @@ export void program3(GLFWwindow* window) {
         
         renderImGui(settings);
         
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+
+        glClearColor(
+            (settings["GL_CLEAR_COLOR"] >> 24) / 255.0f,
+            ((settings["GL_CLEAR_COLOR"] & 0x00FF0000) >> 16) / 255.0f,
+            ((settings["GL_CLEAR_COLOR"] & 0x0000FF00) >> 8) / 255.0f,
+            ((settings["GL_CLEAR_COLOR"] & 0x000000FF)) / 255.0f
+        );
+
         glClear(GL_COLOR_BUFFER_BIT);
 
       
