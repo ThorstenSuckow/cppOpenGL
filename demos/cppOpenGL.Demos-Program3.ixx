@@ -64,7 +64,11 @@ export void program3(GLFWwindow* window) {
          */
         {"GL_POLYGON_MODE", (GL_FRONT_AND_BACK << 16) | GL_FILL},
 
-        {"GL_CLEAR_COLOR", (color | (51 << 24) | (76 << 16) | (76 << 8) | 255)}
+        {"GL_CLEAR_COLOR", (color | (51 << 24) | (76 << 16) | (76 << 8) | 255)},
+
+        {"GL_BLEND", 0x0000},
+
+
     };
     
     while (!glfwWindowShouldClose(window)) {

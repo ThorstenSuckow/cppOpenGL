@@ -83,6 +83,42 @@ void polygonModeOptions(map<string, unsigned int>& settings) {
 }
 
 
+void blendOptions(map<string, unsigned int>& settings) {
+
+    bool enabled = settings["GL_BLEND"] != 0 ? true : false;
+
+    ImGui::SeparatorText("GL_BLEND");
+
+    if (ImGui::Checkbox("GL_BLEND", &enabled)) {
+        settings["GL_BLEND"] = !enabled ? 0 : (GL_SRC_ALPHA << 16 ) | GL_ONE_MINUS_SRC_ALPHA;
+    }
+
+    if (enabled) {
+
+        const map<unsigned short, string> items = {
+            {GL_SRC_ALPHA, "GL_SRC_ALPHA"},
+            {GL_ONE_MINUS_SRC_ALPHA, "GL_ONE_MINUS_SRC_ALPHA" }
+        };
+
+        static unsigned short selectedItem = (settings["GL_BLEND"] >> 16);
+        ImGui::Text("SRC"); ImGui::SameLine(75); 
+        if (items.contains(selectedItem)) {
+            if (ImGui::BeginCombo("##select_GL_BLEND", items.at(selectedItem).c_str())) {
+
+                ImGui::EndCombo();
+            }
+        }
+     }
+
+    if (settings["GL_BLEND"] != 0) {
+        glEnable(GL_BLEND);
+        glBlendFunc(settings["GL_BLEND_FUNC"] >> 16, (settings["GL_BLEND_FUNC"] & 0x00FF));
+    }
+    else {
+        glDisable(GL_BLEND);
+    }
+}
+
 void cullFaceOptions(map<string, unsigned int>& settings) {
     
     bool enabled = settings["GL_CULL_FACE"] != 0 ? true : false;
@@ -128,7 +164,7 @@ void clearColor(map<string, unsigned int>& settings) {
     );
 
     ImGui::SeparatorText("GL_CLEAR_COLOR");
-    ImGui::ColorEdit3("MyColor##1", (float*)&color);
+    ImGui::ColorEdit4("MyColor##1", (float*)&color);
 
     unsigned int col = 0x00000000;
     settings["GL_CLEAR_COLOR"] = col | 
@@ -147,6 +183,8 @@ export namespace ImGuiUtil {
     void addGlobalRenderOptions(map<string, unsigned int>& settings) {
 
         if (ImGui::TreeNodeEx("Global Render Options", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::Spacing();
+            blendOptions(settings);
             ImGui::Spacing();
             clearColor(settings);
             ImGui::Spacing();
