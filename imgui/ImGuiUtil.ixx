@@ -90,29 +90,72 @@ void blendOptions(map<string, unsigned int>& settings) {
     ImGui::SeparatorText("GL_BLEND");
 
     if (ImGui::Checkbox("GL_BLEND", &enabled)) {
-        settings["GL_BLEND"] = !enabled ? 0 : (GL_SRC_ALPHA << 16 ) | GL_ONE_MINUS_SRC_ALPHA;
+        settings["GL_BLEND"] = !enabled ? 0 : ((GL_SRC_ALPHA << 16 ) | GL_ONE_MINUS_SRC_ALPHA);
     }
 
     if (enabled) {
 
-        const map<unsigned short, string> items = {
+        static const map<unsigned short, string> items = {
+            {GL_ZERO, "GL_ZERO"},
+            {GL_ONE, "GL_ONE"},
+            {GL_SRC_COLOR, "GL_SRC_COLOR"},
+            {GL_ONE_MINUS_SRC_COLOR, "GL_ONE_MINUS_SRC_COLOR"},
+            {GL_DST_COLOR, "GL_DST_COLOR"},
+            {GL_ONE_MINUS_DST_COLOR, "GL_ONE_MINUS_DST_COLOR"},
             {GL_SRC_ALPHA, "GL_SRC_ALPHA"},
-            {GL_ONE_MINUS_SRC_ALPHA, "GL_ONE_MINUS_SRC_ALPHA" }
+            {GL_ONE_MINUS_SRC_ALPHA, "GL_ONE_MINUS_SRC_ALPHA" },
+
+            {GL_DST_ALPHA, "GL_DST_ALPHA" },
+            {GL_ONE_MINUS_DST_ALPHA, "GL_ONE_MINUS_DST_ALPHA" },
+            {GL_CONSTANT_COLOR, "GL_CONSTANT_COLOR" },
+            {GL_ONE_MINUS_CONSTANT_COLOR, "GL_ONE_MINUS_CONSTANT_COLOR" },
+            {GL_CONSTANT_ALPHA, "GL_CONSTANT_ALPHA" },
+            {GL_ONE_MINUS_CONSTANT_ALPHA, "GL_ONE_MINUS_CONSTANT_ALPHA" },
+            {GL_SRC_ALPHA_SATURATE, "GL_SRC_ALPHA_SATURATE" },
+            {GL_SRC1_COLOR, "GL_SRC1_COLOR" },
+            {GL_ONE_MINUS_SRC1_COLOR, "GL_ONE_MINUS_SRC1_COLOR" },
+            {GL_SRC1_ALPHA, "GL_SRC1_ALPHA" },
+            {GL_ONE_MINUS_SRC1_ALPHA, "GL_ONE_MINUS_SRC1_ALPHA" }
         };
 
-        static unsigned short selectedItem = (settings["GL_BLEND"] >> 16);
+        static unsigned short selectedSrcItem = (settings["GL_BLEND"] >> 16);
         ImGui::Text("SRC"); ImGui::SameLine(75); 
-        if (items.contains(selectedItem)) {
-            if (ImGui::BeginCombo("##select_GL_BLEND", items.at(selectedItem).c_str())) {
+        if (items.contains(selectedSrcItem)) {
+            if (ImGui::BeginCombo("##select_GL_BLEND_src", items.at(selectedSrcItem).c_str())) {
+
+                for (const auto&[id, value]: items) {
+                    bool isSelected = (selectedSrcItem == id);
+                    if (ImGui::Selectable(value.c_str(), isSelected)) {
+                        selectedSrcItem = id;
+                    }
+                }
+
+                ImGui::EndCombo();
+            }
+            settings["GL_BLEND"] = (selectedSrcItem << 16);
+        }
+
+        static unsigned short selectedDestItem = (settings["GL_BLEND"] & 0x00FF);
+        ImGui::Text("DEST"); ImGui::SameLine(75);
+        if (items.contains(selectedDestItem)) {
+            if (ImGui::BeginCombo("##select_GL_BLEND_dest", items.at(selectedDestItem).c_str())) {
+
+                for (const auto& [id, value] : items) {
+                    bool isSelected = (selectedDestItem == id);
+                    if (ImGui::Selectable(value.c_str(), isSelected)) {
+                        selectedDestItem = id;
+                    }
+                }
 
                 ImGui::EndCombo();
             }
         }
+        settings["GL_BLEND"] = settings["GL_BLEND"] | selectedDestItem;
      }
 
     if (settings["GL_BLEND"] != 0) {
         glEnable(GL_BLEND);
-        glBlendFunc(settings["GL_BLEND_FUNC"] >> 16, (settings["GL_BLEND_FUNC"] & 0x00FF));
+        glBlendFunc(settings["GL_BLEND"] >> 16, (settings["GL_BLEND"] & 0x00FF));
     }
     else {
         glDisable(GL_BLEND);
