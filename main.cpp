@@ -2,6 +2,7 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <map>
 
 import GLSLUtil;
 import cppOpenGL.Demos;
@@ -25,7 +26,30 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 }
 
+static map<string, unsigned int> getSettings() {
+	unsigned int color = 0x00000000;
+	map<string, unsigned int> settings = {
+		{"GL_CULL_FACE", 0x0000},
+		/**
+		 * solely relying on a 16 bit value for the shift operation is risky,
+		 * but'l do for now
+		 */
+		{"GL_POLYGON_MODE", (GL_FRONT_AND_BACK << 16) | GL_FILL},
+
+		{"GL_CLEAR_COLOR", (color | (51 << 24) | (76 << 16) | (76 << 8) | 255)},
+
+		{"GL_BLEND", 0x0000},
+
+
+	};
+
+	return settings;
+}
+
 void run(unsigned int progId, GLFWwindow* window) {
+
+	map<string, unsigned int> settings = getSettings();
+
 	switch (progId) {
 	case 1:
 		program1(window);
@@ -34,7 +58,7 @@ void run(unsigned int progId, GLFWwindow* window) {
 		program2(window);
 		break;
 	case 3:
-		program3(window);
+		program3(window, settings);
 		break;
 	}
 }
@@ -44,7 +68,7 @@ int select_program() {
 	cout << "Please specify the program to run:\n\n";
 	cout << "(1) Lesson 1-1: Triangle drawing (glDrawArrays)\n";
 	cout << "(2) Lesson 1-2: Triangle drawing indexed (glDrawElements)\n";
-	cout << "(3) Lesson 1-3: Clockwise GL_TRIANGLE_STRIP\n";
+	cout << "(3) Lesson 1-3: Clockwise GL_TRIANGLE_STRIP (incl. settings overlay)\n";
 	cout << "(anything else: exit)\n\n";
 
 	int option;

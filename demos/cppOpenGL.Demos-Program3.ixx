@@ -24,7 +24,7 @@ void renderImGui(map<string, unsigned int>& settings) {
 
 }
 
-export void program3(GLFWwindow* window) {
+export void program3(GLFWwindow* window, map<string, unsigned int>& settings) {
 
     ImGuiUtil::init(window);
 
@@ -55,21 +55,7 @@ export void program3(GLFWwindow* window) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    unsigned int color = 0x00000000;
-    map<string, unsigned int> settings = {
-        {"GL_CULL_FACE", 0x0000},
-        /**
-         * solely relying on a 16 bit value for the shift operation is risky, 
-         * but'l do for now
-         */
-        {"GL_POLYGON_MODE", (GL_FRONT_AND_BACK << 16) | GL_FILL},
-
-        {"GL_CLEAR_COLOR", (color | (51 << 24) | (76 << 16) | (76 << 8) | 255)},
-
-        {"GL_BLEND", 0x0000},
-
-
-    };
+   
     
     while (!glfwWindowShouldClose(window)) {
 
