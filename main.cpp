@@ -60,22 +60,32 @@ void run(unsigned int progId, GLFWwindow* window) {
 	case 3:
 		program3(window, settings);
 		break;
-	}
+	
+	case 4:
+		program4(window);
+		break;
+}
+
 }
 
 int select_program() {
 
+	const unsigned char NUM_PROGRAMS = 4;
+
+	cout << "OpenGL 4.6\n";
+	cout << "==========\n\n";
 	cout << "Please specify the program to run:\n\n";
 	cout << "(1) Lesson 1-1: Triangle drawing (glDrawArrays)\n";
 	cout << "(2) Lesson 1-2: Triangle drawing indexed (glDrawElements)\n";
 	cout << "(3) Lesson 1-3: Clockwise GL_TRIANGLE_STRIP (incl. settings overlay)\n";
+	cout << "(4) Excercise 5.8.1: Vertices for two triangles\n";
 	cout << "(anything else: exit)\n\n";
 
 	int option;
 
 	cin >> option;
 
-	if (option > 0 && option <= 3) {
+	if (option > 0 && option <= NUM_PROGRAMS) {
 		string progid = to_string(option);
 		cout << "running " + progid + "...\n";
 	} else {
@@ -94,8 +104,8 @@ int main() {
 	}
 
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Demo", NULL, NULL);

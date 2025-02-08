@@ -2,12 +2,13 @@ module;
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+#include <iostream>
 
 export module cppOpenGL.Demos:Program4;
 
 import GLFWUtil;
 
+using namespace std;
 
 export void program4(GLFWwindow* window) {
 
@@ -22,14 +23,22 @@ export void program4(GLFWwindow* window) {
 
     };
 
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+    enum VAO_IDs { Triangles, NumVAOs };
+    enum Buffer_IDs {ArrayBuffer, NumBuffers};
+    enum Attrib_IDs {vPosition = 0};
+    
+    GLuint VAOs[NumVAOs];
+    GLuint Buffers[NumBuffers];
+    
+    cout << "This program uses OpenGL 4.5 functionality, e.g. \"glCreateVertexArrays\"" << endl;
 
-    GLuint VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glCreateVertexArrays(NumVAOs, VAOs);
+    glBindVertexArray(VAOs[Triangles]);
+
+    
+    glCreateBuffers(NumBuffers, Buffers);
+    glBindBuffer(GL_ARRAY_BUFFER, Buffers[ArrayBuffer]);
+    glNamedBufferStorage(Buffers[ArrayBuffer], sizeof(vertices), vertices, 0);
 
 
     glEnableVertexAttribArray(0);
