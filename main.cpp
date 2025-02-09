@@ -60,17 +60,20 @@ void run(unsigned int progId, GLFWwindow* window) {
 	case 3:
 		program3(window, settings);
 		break;
-	
 	case 4:
 		program4(window);
 		break;
-}
+	case 5:
+		program5(window);
+		break;
+
+	}
 
 }
 
 int select_program() {
 
-	const unsigned char NUM_PROGRAMS = 4;
+	const unsigned char NUM_PROGRAMS = 5;
 
 	cout << "OpenGL 4.6\n";
 	cout << "==========\n\n";
@@ -79,6 +82,7 @@ int select_program() {
 	cout << "(2) Lesson 1-2: Triangle drawing indexed (glDrawElements)\n";
 	cout << "(3) Lesson 1-3: Clockwise GL_TRIANGLE_STRIP (incl. settings overlay)\n";
 	cout << "(4) Excercise 5.8.1: Vertices for two triangles\n";
+	cout << "(5) Excercise 5.8.2: Two VAOs/VBOs for two triangles\n";
 	cout << "(anything else: exit)\n\n";
 
 	int option;
