@@ -66,6 +66,9 @@ void run(unsigned int progId, GLFWwindow* window) {
 	case 5:
 		program5(window);
 		break;
+	case 6:
+		program6(window);
+		break;
 
 	}
 
@@ -73,7 +76,7 @@ void run(unsigned int progId, GLFWwindow* window) {
 
 int select_program() {
 
-	const unsigned char NUM_PROGRAMS = 5;
+	const unsigned char NUM_PROGRAMS = 6;
 
 	cout << "OpenGL 4.6\n";
 	cout << "==========\n\n";
@@ -83,6 +86,7 @@ int select_program() {
 	cout << "(3) Lesson 1-3: Clockwise GL_TRIANGLE_STRIP (incl. settings overlay)\n";
 	cout << "(4) Excercise 5.8.1: Vertices for two triangles\n";
 	cout << "(5) Excercise 5.8.2: Two VAOs/VBOs for two triangles\n";
+	cout << "(6) Excercise 5.8.3: Two different fragment shaders for two triangles\n";
 	cout << "(anything else: exit)\n\n";
 
 	int option;
