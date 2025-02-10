@@ -4,3 +4,5 @@
 /*.user
 /vendor
 /imgui.ini
+/cppOpenGL.aps
+/cppOpenGL.rc
