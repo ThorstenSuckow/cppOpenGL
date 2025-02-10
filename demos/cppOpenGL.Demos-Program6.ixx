@@ -1,5 +1,6 @@
 module;
 
+#include <iostream>
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 
@@ -7,34 +8,9 @@ export module cppOpenGL.Demos:Program6;
 
 import GLFWUtil;
 import GLSLUtil;
+import IOUtil;
 
-const char* vertexShaderSource = 
-    "#version 450 core\n"
-    "layout (location=0) in vec3 aPos;"
-    "void main() {\n"
-    " gl_Position = vec4(aPos, 1.0f);\n"
-    " \n"
-    "\n}\0"
-;
-
-const char* fragmentShaderSource1 =
-"#version 450 core\n"
-"out vec4 FragColor;"
-"void main() {\n"
-" FragColor = vec4(0.0f, 1.0f, 1.0f, 1.0f);\n"
-" \n"
-"\n}\0"
-;
-
-const char* fragmentShaderSource2 =
-"#version 450 core\n"
-"out vec4 FragColor;"
-"void main() {\n"
-" FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
-" \n"
-"\n}\0"
-;
-
+using namespace std;
 
 export void program6(GLFWwindow* window) {
 
@@ -54,8 +30,19 @@ export void program6(GLFWwindow* window) {
 
     unsigned int shaderProgram1;
     unsigned int shaderProgram2;
-    shaderProgram1 = GLSLUtil::compileShader(vertexShaderSource, fragmentShaderSource1);
-    shaderProgram2 = GLSLUtil::compileShader(vertexShaderSource, fragmentShaderSource2);
+   
+    string vertexShaderSource;
+    string fragmentShaderSource1;
+    string fragmentShaderSource2;
+
+    IOUtil::readInto("./resources/shader/simpleshader.vert", vertexShaderSource);
+    IOUtil::readInto("./resources/shader/fragment.5.8.3.a.frag", fragmentShaderSource1);
+    IOUtil::readInto("./resources/shader/fragment.5.8.3.b.frag", fragmentShaderSource2);
+
+    shaderProgram1 = GLSLUtil::compileShader(
+        vertexShaderSource.c_str(), fragmentShaderSource1.c_str());
+    shaderProgram2 = GLSLUtil::compileShader(
+        vertexShaderSource.c_str(), fragmentShaderSource2.c_str());
 
     enum VAO_IDs { Triangle1, Triangle2, NumVAOs };
     enum Buffer_IDs { TriangleBuffer1, TriangleBuffer2, NumBuffers };
