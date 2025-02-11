@@ -6,21 +6,9 @@
 
 import GLSLUtil;
 import cppOpenGL.Demos;
-
+import IOUtil;
 using namespace std;
 
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location=0) in vec3 aPos;\n"
-"void main() {\n"
-" gl_Position = vec4(aPos, 1);\n"
-"}\0";
-
-
-const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main() {\n"
-" FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"}\0";
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -135,7 +123,14 @@ int main() {
 	glViewport(0, 0, 800, 600);
 
 	unsigned int shaderProgram;
-	shaderProgram = GLSLUtil::compileShader(vertexShaderSource, fragmentShaderSource);
+	string vertexShaderSource;
+	string fragmentShaderSource;
+	IOUtil::readInto("./resources/shader/simpleshader.vert", vertexShaderSource);
+	IOUtil::readInto("./resources/shader/simpleshader.frag", fragmentShaderSource);
+
+
+	shaderProgram = GLSLUtil::compileShader(
+		vertexShaderSource.c_str(), fragmentShaderSource.c_str());
 
 	glUseProgram(shaderProgram);
 	
