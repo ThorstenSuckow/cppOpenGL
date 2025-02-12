@@ -27,6 +27,20 @@ static void HelpMarker(const char* desc)
     }
 }
 
+void pointSizeOptions(map<string, unsigned int>& settings) {
+
+    static float pointSize = (float)(settings["GL_POINT_SIZE"] / 10);
+    cout << pointSize << endl;
+
+    ImGui::SeparatorText("GL_POINT_SIZE");
+
+    if (ImGui::SliderFloat("##GL_POINT_SIZE", &pointSize, 1.0f, 100.0f, "%.1f")) {
+        settings["GL_POINT_SIZE"] = (unsigned int)(pointSize * 10);
+        glPointSize(pointSize);
+    }
+
+}
+
 void polygonModeOptions(map<string, unsigned int>& settings) {
 
 
@@ -226,6 +240,8 @@ export namespace ImGuiUtil {
     void addGlobalRenderOptions(map<string, unsigned int>& settings) {
 
         if (ImGui::TreeNodeEx("Global Render Options", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::Spacing();
+            pointSizeOptions(settings);
             ImGui::Spacing();
             blendOptions(settings);
             ImGui::Spacing();
