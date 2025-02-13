@@ -33,12 +33,26 @@ void pointSizeOptions(map<string, unsigned int>& settings) {
     
     ImGui::SeparatorText("GL_POINT_SIZE");
 
-    if (ImGui::SliderFloat("##GL_POINT_SIZE", &pointSize, 1.0f, 100.0f, "%.1f")) {
+    if (ImGui::SliderFloat("##GL_POINT_SIZE", &pointSize, 0.0f, 100.0f, "%.1f")) {
         settings["GL_POINT_SIZE"] = (unsigned int)(pointSize * 10);
         glPointSize(pointSize);
     }
+}
+
+void lineWidthOptions(map<string, unsigned int>& settings) {
+
+    static float lineWidth = (float)(settings["GL_LINE_WIDTH"] / 10);
+
+    ImGui::SeparatorText("GL_LINE_WIDTH");
+
+    if (ImGui::SliderFloat("##GL_LINE_WIDTH", &lineWidth, 0.0f, 100.0f, "%.1f")) {
+        settings["GL_LINE_WIDTH"] = (unsigned int)(lineWidth * 10);
+        glLineWidth(lineWidth);
+    }
 
 }
+
+
 
 void polygonModeOptions(map<string, unsigned int>& settings) {
 
@@ -239,6 +253,8 @@ export namespace ImGuiUtil {
     void addGlobalRenderOptions(map<string, unsigned int>& settings) {
 
         if (ImGui::TreeNodeEx("Global Render Options", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::Spacing();
+            lineWidthOptions(settings);
             ImGui::Spacing();
             pointSizeOptions(settings);
             ImGui::Spacing();

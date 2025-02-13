@@ -28,7 +28,8 @@ static map<string, unsigned int> getSettings() {
 
 		{"GL_BLEND", 0x0000},
 
-		{"GL_POINT_SIZE", 10}
+		{"GL_POINT_SIZE", 10},
+		{"GL_LINE_WIDTH", 10}
 
 	};
 
