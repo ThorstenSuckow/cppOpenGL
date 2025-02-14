@@ -224,6 +224,42 @@ void cullFaceOptions(map<string, unsigned int>& settings) {
 
 }
 
+
+void lineSmoothOptions(map<string, unsigned int>& settings) {
+
+    bool enabled = settings["GL_LINE_SMOOTH"] != 0 ? true : false;
+
+    ImGui::SeparatorText("GL_LINE_SMOOTH");
+
+    if (ImGui::Checkbox("GL_LINE_SMOOTH", &enabled)) {
+        settings["GL_LINE_SMOOTH"] = !enabled ? 0 : GL_DONT_CARE;
+    }
+
+    if (enabled) {
+        const char* items[] = { "GL_FASTEST", "GL_NICEST", "GL_DONT_CARE" };
+        static int selectedItem = 0;
+        if (ImGui::BeginCombo("##select_GL_LINE_SMOOTH", items[selectedItem])) {
+            for (int i = 0; i < IM_ARRAYSIZE(items); ++i) {
+                bool isSelected = (selectedItem == i);
+                if (ImGui::Selectable(items[i], isSelected)) {
+                    selectedItem = i;
+                }
+            }
+            ImGui::EndCombo();
+        }
+        settings["GL_LINE_SMOOTH"] = selectedItem == 0 ? GL_FASTEST : (selectedItem == 1 ? GL_NICEST : GL_DONT_CARE);
+    }
+
+    if (settings["GL_LINE_SMOOTH"] != 0) {
+        glEnable(GL_LINE_SMOOTH);
+        glHint(GL_LINE_SMOOTH_HINT, settings["GL_LINE_SMOOTH"]);
+    }
+    else {
+        glDisable(GL_LINE_SMOOTH);
+    }
+
+}
+
 void clearColor(map<string, unsigned int>& settings) {
 
     static ImVec4 color = ImVec4(
@@ -259,6 +295,8 @@ export namespace ImGuiUtil {
             pointSizeOptions(settings);
             ImGui::Spacing();
             blendOptions(settings);
+            ImGui::Spacing();
+            lineSmoothOptions(settings);
             ImGui::Spacing();
             clearColor(settings);
             ImGui::Spacing();
