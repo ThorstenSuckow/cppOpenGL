@@ -37,11 +37,29 @@ static map<string, unsigned int> getSettings() {
 	return settings;
 }
 
+void showEnv(GLFWwindow* window) {
+
+	const GLubyte* version = glGetString(GL_VERSION);
+	
+	int nrAttributes;
+	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+	
+	cout << endl << endl << "Env infos:" << endl;
+	cout << "OpenGL Version: " << version << endl;
+	cout << "Max nr of vertex attributes: " << nrAttributes;
+	cout << endl << endl;
+
+}
+
 void run(unsigned int progId, GLFWwindow* window) {
 
 	map<string, unsigned int> settings = getSettings();
 
 	switch (progId) {
+	case 0:
+		showEnv(window);
+		break;
+
 	case 1:
 		program1(window);
 		break;
@@ -72,6 +90,7 @@ int select_program() {
 	cout << "OpenGL 4.6\n";
 	cout << "==========\n\n";
 	cout << "Please specify the program to run:\n\n";
+	cout << "(0) env infos\n";
 	cout << "(1) Lesson 1-1: Triangle drawing (glDrawArrays)\n";
 	cout << "(2) Lesson 1-2: Triangle drawing indexed (glDrawElements)\n";
 	cout << "(3) Lesson 1-3: Clockwise GL_TRIANGLE_STRIP (incl. settings overlay)\n";
@@ -84,7 +103,7 @@ int select_program() {
 
 	cin >> option;
 
-	if (option > 0 && option <= NUM_PROGRAMS) {
+	if (option >= 0 && option <= NUM_PROGRAMS) {
 		string progid = to_string(option);
 		cout << "running " + progid + "...\n";
 	} else {
@@ -98,16 +117,16 @@ int main() {
 
 	int option = select_program();
 
-	if (option == 0) {
-		return 0;
-	}
 
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Demo", NULL, NULL);
+	short width = option == 0 ? 1 : 800;
+	short height= option == 0 ? 1 : 600;
+
+	GLFWwindow* window = glfwCreateWindow(width, height, "OpenGL Demo", NULL, NULL);
 
 	if (window == NULL) {
 		std::cout << "Failed to creat GLFW window" << std::endl;
