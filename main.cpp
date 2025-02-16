@@ -9,6 +9,7 @@ import cppOpenGL.Demos;
 import IOUtil;
 using namespace std;
 
+const unsigned short NUM_PROGRAMS = 7;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -78,6 +79,9 @@ void run(unsigned int progId, GLFWwindow* window) {
 	case 6:
 		program6(window);
 		break;
+	case 7:
+		program7(window);
+		break;
 
 	}
 
@@ -85,7 +89,6 @@ void run(unsigned int progId, GLFWwindow* window) {
 
 int select_program() {
 
-	const unsigned char NUM_PROGRAMS = 6;
 
 	cout << "OpenGL 4.6\n";
 	cout << "==========\n\n";
@@ -97,6 +100,7 @@ int select_program() {
 	cout << "(4) Excercise 5.8.1: Vertices for two triangles\n";
 	cout << "(5) Excercise 5.8.2: Two VAOs/VBOs for two triangles\n";
 	cout << "(6) Excercise 5.8.3: Two different fragment shaders for two triangles\n";
+	cout << "(7) Lesson 1-4: Color changing shader\n";
 	cout << "(anything else: exit)\n\n";
 
 	int option;
@@ -107,7 +111,7 @@ int select_program() {
 		string progid = to_string(option);
 		cout << "running " + progid + "...\n";
 	} else {
-		option = 0;
+		option = -1;
 	}
 	
 	return option;
@@ -117,6 +121,9 @@ int main() {
 
 	int option = select_program();
 
+	if (option == -1) {
+		return 0;
+	}
 
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
