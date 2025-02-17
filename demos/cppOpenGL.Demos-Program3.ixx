@@ -17,12 +17,6 @@ import ImGuiUtil;
 using namespace std;
 
 
-void renderImGui(map<string, unsigned int>& settings) {
-    ImGui::Begin("Program3");
-    ImGuiUtil::addGlobalRenderOptions(settings);
-    ImGui::End();
-
-}
 
 export void program3(GLFWwindow* window, map<string, unsigned int>& settings) {
 
@@ -66,7 +60,7 @@ export void program3(GLFWwindow* window, map<string, unsigned int>& settings) {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         
-        renderImGui(settings);
+        ImGuiUtil::renderSettings("Program3", settings);
         
 
         glClearColor(
