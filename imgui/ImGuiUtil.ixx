@@ -285,7 +285,6 @@ void clearColor(map<string, unsigned int>& settings) {
 
 export namespace ImGuiUtil {
 
-   
     void addGlobalRenderOptions(map<string, unsigned int>& settings) {
 
         if (ImGui::TreeNodeEx("Global Render Options", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -307,6 +306,12 @@ export namespace ImGuiUtil {
 
         }
 
+    }
+
+    void renderSettings(string name, map<string, unsigned int>& settings) {
+        ImGui::Begin(name.c_str());
+        addGlobalRenderOptions(settings);
+        ImGui::End();
     }
 
 
