@@ -104,7 +104,7 @@ int select_program() {
 	cout << "(5) Excercise 5.8.2: Two VAOs/VBOs for two triangles\n";
 	cout << "(6) Excercise 5.8.3: Two different fragment shaders for two triangles\n";
 	cout << "(7) Lesson 1-4: Color changing shader\n";
-	cout << "(8) Lesson 1-5: -\n";
+	cout << "(8) Lesson 1-5: Color changing shader w/ settings\n";
 	cout << "(anything else: exit)\n\n";
 
 	int option;
