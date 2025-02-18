@@ -9,7 +9,7 @@ import cppOpenGL.Demos;
 import IOUtil;
 using namespace std;
 
-const unsigned short NUM_PROGRAMS = 8;
+const unsigned short NUM_PROGRAMS = 9;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -85,6 +85,9 @@ void run(unsigned int progId, GLFWwindow* window) {
 	case 8:
 		program8(window, settings);
 		break;
+	case 9:
+		program9(window, settings);
+		break;
 
 	}
 
@@ -105,6 +108,7 @@ int select_program() {
 	cout << "(6) Excercise 5.8.3: Two different fragment shaders for two triangles\n";
 	cout << "(7) Lesson 1-4: Color changing shader\n";
 	cout << "(8) Lesson 1-5: Color changing shader w/ settings\n";
+	cout << "(9) Lesson 1-6: Select object w/ click\n";
 	cout << "(anything else: exit)\n\n";
 
 	int option;
