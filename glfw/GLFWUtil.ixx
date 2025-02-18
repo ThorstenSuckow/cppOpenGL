@@ -9,7 +9,7 @@ export module GLFWUtil;
 export namespace GLFWUtil {
 
 	
-	void processInput(GLFWwindow* window) {
+	inline void processInput(GLFWwindow* window) {
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 			glfwSetWindowShouldClose(window, true);
 		}
