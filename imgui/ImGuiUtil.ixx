@@ -314,6 +314,20 @@ export namespace ImGuiUtil {
         ImGui::End();
     }
 
+    void renderSettingsAndClear(string name, map<string, unsigned int>& settings, unsigned short glClearFlag) {
+        renderSettings(name, settings);
+
+        glClearColor(
+            (settings["GL_CLEAR_COLOR"] >> 24) / 255.0f,
+            ((settings["GL_CLEAR_COLOR"] & 0x00FF0000) >> 16) / 255.0f,
+            ((settings["GL_CLEAR_COLOR"] & 0x0000FF00) >> 8) / 255.0f,
+            ((settings["GL_CLEAR_COLOR"] & 0x000000FF)) / 255.0f
+        );
+
+        glClear(glClearFlag);
+        
+    }
+
 
     void shutdown() {
         ImGui_ImplOpenGL3_Shutdown();
