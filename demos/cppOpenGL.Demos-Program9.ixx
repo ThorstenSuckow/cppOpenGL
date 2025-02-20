@@ -18,8 +18,28 @@ import IOUtil;
 using namespace std;
 
 
+void idToColor(unsigned int id, unsigned char* color) {
+
+    if (id > 0xFFFFFF) {
+        cerr << "id must be less than or equal to " << 0xFFFFFF;
+    }
+
+    color[0] = (id) & 0xFF;
+    color[1] = (id >> 8) & 0xFF;
+    color[2] = (id >> 16) & 0xFF;
+
+}
+
 
 export void program9(GLFWwindow* window, map<string, unsigned int>& settings) {
+
+    unsigned char color[3] = { 0, 0, 0 };
+
+    idToColor(256*256*256 - 1, color);
+
+    cout  << "COLOR:" << static_cast<int>(color[0]) << " " << " " << static_cast<int>(color[1]) << " " << static_cast<int>(color[2]);
+
+
 
     float vertices[] = {
         -0.25f, -0.25f, 0.0f,
@@ -68,6 +88,5 @@ export void program9(GLFWwindow* window, map<string, unsigned int>& settings) {
 
         glfwSwapBuffers(window);
     }
-
 
 }
