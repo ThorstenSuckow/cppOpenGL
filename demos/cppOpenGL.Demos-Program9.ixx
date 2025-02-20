@@ -37,8 +37,6 @@ export void program9(GLFWwindow* window, map<string, unsigned int>& settings) {
 
     idToColor(256*256*256 - 1, color);
 
-    cout  << "COLOR:" << static_cast<int>(color[0]) << " " << " " << static_cast<int>(color[1]) << " " << static_cast<int>(color[2]);
-
 
 
     float vertices[] = {
@@ -88,5 +86,6 @@ export void program9(GLFWwindow* window, map<string, unsigned int>& settings) {
 
         glfwSwapBuffers(window);
     }
+    ImGuiUtil::shutdown();
 
 }
