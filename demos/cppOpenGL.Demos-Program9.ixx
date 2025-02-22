@@ -18,7 +18,7 @@ import IOUtil;
 using namespace std;
 
 
-void idToColor(unsigned int id, unsigned char* color) {
+void id2Color(unsigned int id, unsigned char* color) {
 
     if (id > 0xFFFFFF) {
         cerr << "id must be less than or equal to " << 0xFFFFFF;
@@ -27,17 +27,46 @@ void idToColor(unsigned int id, unsigned char* color) {
     color[0] = (id) & 0xFF;
     color[1] = (id >> 8) & 0xFF;
     color[2] = (id >> 16) & 0xFF;
+}
 
+
+unsigned int color2Id(unsigned char* color) {
+    return (color[2] << 16) |
+        (color[1] << 8) |
+        (color[0]);
+}
+
+
+void loadColorIdProgram(unsigned int &prog) {
+    string vertex;
+    string  fragment;
+    IOUtil::readInto("./resources/shader/lesson-1-6.vert", vertex);
+    IOUtil::readInto("./resources/shader/lesson-1-6.frag", fragment);
+
+    prog = GLSLUtil::compileShader(vertex.c_str(), fragment.c_str());
+}
+
+void loadProgram(unsigned int& prog) {
+    string vertex;
+    string  fragment;
+    IOUtil::readInto("resources/shader/simpleshader.vert", vertex);
+    IOUtil::readInto("resources/shader/simpleshader.frag", fragment);
+
+    prog = GLSLUtil::compileShader(vertex.c_str(), fragment.c_str());
 }
 
 
 export void program9(GLFWwindow* window, map<string, unsigned int>& settings) {
 
-    unsigned char color[3] = { 0, 0, 0 };
+    unsigned char colorCode[3] = {0, 0, 0};
 
-    idToColor(256*256*256 - 1, color);
+    unsigned int colorIdProg;
+    unsigned int prog;
+    loadColorIdProgram(colorIdProg);
+    loadProgram(prog);
 
-
+    unsigned int colorCodeUniform = glGetUniformLocation(
+        colorIdProg, "id2ColorCode");
 
     float vertices[] = {
         -0.25f, -0.25f, 0.0f,
@@ -45,7 +74,7 @@ export void program9(GLFWwindow* window, map<string, unsigned int>& settings) {
         0.0f, 0.25f, 0.0f
     };
 
-    enum VAO_IDs {Triangle, NumVAOs};
+    enum VAO_IDs {Triangle, ColorMapper, NumVAOs};
     enum VBO_IDs {Buffer, NumVBOs};
     enum AttributeIds {vPosition = 0};
 
@@ -56,13 +85,25 @@ export void program9(GLFWwindow* window, map<string, unsigned int>& settings) {
     glCreateBuffers(NumVBOs, VBOs);
 
     glNamedBufferStorage(VBOs[Buffer], sizeof(vertices), vertices, 0);
-
+    
+    glBindVertexArray(VAOs[ColorMapper]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBOs[Buffer]);
+    glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(vPosition);
+    
     glBindVertexArray(VAOs[Triangle]);
     glBindBuffer(GL_ARRAY_BUFFER, VBOs[Buffer]);
     glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(vPosition);
 
     ImGuiUtil::init(window);
+
+    ImGuiIO& io = ImGui::GetIO();
+    int width;
+    int height;
+    glfwGetWindowSize(window, &width, &height);
+
+    cout << width << " " << height;
 
     while (!glfwWindowShouldClose(window)) {
 
@@ -75,10 +116,52 @@ export void program9(GLFWwindow* window, map<string, unsigned int>& settings) {
         ImGui::NewFrame();
         ImGuiUtil::renderSettingsAndClear("Program9", settings, GL_COLOR_BUFFER_BIT);
         
-        glBindVertexArray(VAOs[Triangle]);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        glBindVertexArray(0);
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
+            ImGui::Text("Mouse pos: (%g, %g)", io.MousePos.x, io.MousePos.y);
+            ImGui::Text("Mouse down: ");
+            for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++) {
+                if (ImGui::IsMouseDown(i)) {
+                    ImGui::Text("b%d (%.02f secs)", i, io.MouseDownDuration[i]);
+                }
+            }
 
+
+            glUseProgram(colorIdProg);
+            glBindVertexArray(VAOs[ColorMapper]);
+
+            id2Color(255, colorCode);
+
+            glUniform3f(
+                colorCodeUniform,
+                (float)(colorCode[2] / 255.0f),
+                (float)(colorCode[1] / 255.0f),
+                (float)(colorCode[0] / 255.0f)
+            );
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+           
+            glFlush();
+            glFinish();
+
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+            unsigned char data[4];
+            glReadPixels(
+                io.MousePos.x, 
+                io.MousePos.y, 
+                1, 1,
+                GL_RGBA,
+                GL_UNSIGNED_BYTE,
+                data
+            );
+            ImGui::Text("(%d, %d, %d)", data[0], data[1], data[2]);
+        }
+
+        
+
+        glUseProgram(prog);
+        glBindVertexArray(VAOs[Triangle]);
+        glDrawArrays(GL_LINE_LOOP, 0, 3);
+        glBindVertexArray(0);
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
