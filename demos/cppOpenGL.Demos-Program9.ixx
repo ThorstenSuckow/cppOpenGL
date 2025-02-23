@@ -30,10 +30,10 @@ void id2Color(unsigned int id, unsigned char* color) {
 }
 
 
-unsigned int color2Id(unsigned char* color) {
-    return (color[2] << 16) |
-        (color[1] << 8) |
-        (color[0]);
+unsigned int color2Id(unsigned char r, unsigned char g, unsigned char b) {
+    return (r << 16) |
+        (g << 8) |
+        (b);
 }
 
 
@@ -55,6 +55,7 @@ void loadProgram(unsigned int& prog) {
     prog = GLSLUtil::compileShader(vertex.c_str(), fragment.c_str());
 }
 
+const unsigned int OBJECT_ID = 34;
 
 export void program9(GLFWwindow* window, map<string, unsigned int>& settings) {
 
@@ -101,14 +102,13 @@ export void program9(GLFWwindow* window, map<string, unsigned int>& settings) {
     ImGuiIO& io = ImGui::GetIO();
     int width;
     int height;
-    glfwGetWindowSize(window, &width, &height);
-
-    cout << width << " " << height;
-
+    
+    
     while (!glfwWindowShouldClose(window)) {
 
         glfwPollEvents();
         GLFWUtil::processInput(window);
+        glfwGetWindowSize(window, &width, &height);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -116,9 +116,10 @@ export void program9(GLFWwindow* window, map<string, unsigned int>& settings) {
         ImGui::NewFrame();
         ImGuiUtil::renderSettingsAndClear("Program9", settings, GL_COLOR_BUFFER_BIT);
         
+        ImGui::Text("Mouse pos: (%g, %g)", io.MousePos.x, io.MousePos.y);
+        ImGui::Text("Mouse down: ");
+
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
-            ImGui::Text("Mouse pos: (%g, %g)", io.MousePos.x, io.MousePos.y);
-            ImGui::Text("Mouse down: ");
             for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++) {
                 if (ImGui::IsMouseDown(i)) {
                     ImGui::Text("b%d (%.02f secs)", i, io.MouseDownDuration[i]);
@@ -129,7 +130,7 @@ export void program9(GLFWwindow* window, map<string, unsigned int>& settings) {
             glUseProgram(colorIdProg);
             glBindVertexArray(VAOs[ColorMapper]);
 
-            id2Color(255, colorCode);
+            id2Color(OBJECT_ID, colorCode);
 
             glUniform3f(
                 colorCodeUniform,
@@ -146,21 +147,24 @@ export void program9(GLFWwindow* window, map<string, unsigned int>& settings) {
 
             unsigned char data[4];
             glReadPixels(
-                io.MousePos.x, 
-                io.MousePos.y, 
-                1, 1,
-                GL_RGBA,
-                GL_UNSIGNED_BYTE,
-                data
+                io.MousePos.x, height - io.MousePos.y, 
+                1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data
             );
-            ImGui::Text("(%d, %d, %d)", data[0], data[1], data[2]);
+            
+            unsigned int objectId = color2Id(data[0], data[1], data[2]);
+            ImGui::Text(
+                "(%d, %d, %d) [%d] %s", 
+                data[0], data[1], data[2],
+                objectId,
+                objectId == OBJECT_ID ? "match" : "-"
+            );
         }
 
         
 
         glUseProgram(prog);
         glBindVertexArray(VAOs[Triangle]);
-        glDrawArrays(GL_LINE_LOOP, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
