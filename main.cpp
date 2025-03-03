@@ -88,6 +88,9 @@ void run(unsigned int progId, GLFWwindow* window) {
 	case 9:
 		program9(window, settings);
 		break;
+	case 111:
+		program111(window);
+		break;
 
 	}
 
@@ -115,7 +118,7 @@ int select_program() {
 
 	cin >> option;
 
-	if (option >= 0 && option <= NUM_PROGRAMS) {
+	if (option >= 0 && option <= NUM_PROGRAMS || (option == 111)) {
 		string progid = to_string(option);
 		cout << "running " + progid + "...\n";
 	} else {
