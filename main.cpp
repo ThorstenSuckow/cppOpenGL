@@ -9,7 +9,7 @@ import cppOpenGL.Demos;
 import IOUtil;
 using namespace std;
 
-const unsigned short NUM_PROGRAMS = 9;
+const unsigned short NUM_PROGRAMS = 10;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -88,6 +88,9 @@ void run(unsigned int progId, GLFWwindow* window) {
 	case 9:
 		program9(window, settings);
 		break;
+	case 10:
+		program10(window);
+		break;
 	case 111:
 		program111(window);
 		break;
@@ -112,6 +115,7 @@ int select_program() {
 	cout << "(7) Lesson 1-4: Color changing shader\n";
 	cout << "(8) Lesson 1-5: Color changing shader w/ settings\n";
 	cout << "(9) Lesson 1-6: Select object w/ click\n";
+	cout << "(10) Lesson 2-1: Triangle axis rotation\n";
 	cout << "(anything else: exit)\n\n";
 
 	int option;
