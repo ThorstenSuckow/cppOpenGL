@@ -1,9 +1,13 @@
 module; 
 
+#define _USE_MATH_DEFINES
+
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <map>
+#include <array>
+#include <cmath>
 
 export module cppOpenGL.Demos:Program10;
 
@@ -13,6 +17,36 @@ import GLSLUtil;
 import IOUtil;
 
 using namespace std;
+
+struct Triangle {
+public:
+	float rotZ = 0;
+	float rotY = 0;
+};
+
+
+array<float, 16> rotateZ(float degree) {
+	return array<float, 16> {
+		cos(degree), sin(degree), 0, 0,
+			-sin(degree), cos(degree), 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+	};
+}
+
+array<float, 16> rotateY(float degree) {
+	return array<float, 16> {
+		cos(degree), 0, -sin(degree), 0,
+		0, 1, 0, 0,
+		sin(degree), 0, cos(degree), 0,
+		0, 0, 0, 1
+	};
+}
+
+
+Triangle MY_TRIANGLE;
+
+
 
 void loadVertexShader(unsigned int& prog) {
 
@@ -29,6 +63,8 @@ void processInput(GLFWwindow* window) {
 
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		cout << "LEFT" << endl;
+		MY_TRIANGLE.rotY = fmod((MY_TRIANGLE.rotY + (5 * M_PI / 180)), 2 * M_PI);
+		cout << MY_TRIANGLE.rotY << endl;
 		return;
 	}
 
@@ -78,22 +114,29 @@ export void program10(GLFWwindow* window) {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	
+	unsigned int mvpMatrix = glGetUniformLocation(PROG_ID, "modelMatrix");
+
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		GLFWUtil::processInput(window);
 		processInput(window);
 
+		array<float, 16> modelMatrix = rotateY(MY_TRIANGLE.rotY);
+
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-
 		glUseProgram(PROG_ID);
+		glUniformMatrix4fv(mvpMatrix, 1, GL_FALSE, modelMatrix.data());
 		glBindVertexArray(VAO);
 
+
+
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+
 
 		glfwSwapBuffers(window);
 	}
