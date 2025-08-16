@@ -6,7 +6,10 @@ module;
 
 export module Scene;
 
-import Math;
+import helios.math;
+
+namespace math = helios::math;
+
 
 export namespace Scene {
 
@@ -17,6 +20,7 @@ export namespace Scene {
 		float rotX;
 		float rotY;
 		float rotZ;
+                math::mat4 model = math::mat4(1.0f);
 
 	public:
 
@@ -28,30 +32,40 @@ export namespace Scene {
 		const float* getVertices() const {
 			return this->vertices.data();
 		}
-		const int getVerticesSize() const {
+		const size_t& getVerticesSize() const {
 			return this->vertices.size() * sizeof(float);
 		}
 
-		Node* setRotateX(const float& amount) {
+		const float& rotateX() {
+			return this->rotX;
+		}
+		const float& rotateY() {
+			return this->rotY;
+		}
+		const float& rotateZ() {
+			return this->rotZ;
+		}
+
+		const Node* rotateX(const float& amount) {
 			this->rotX = amount;
+			model = math::rotateX(this->rotX) * model;
 			return this;
 		}
-		Node* setRotateY(const float& amount) {
-			this->rotY = amount;
+
+		const Node* rotateY(const float& amount) {
+			this->rotY += amount;
+			this->model = math::rotateY(amount) * model;
 			return this;
 		}
 		
-		const float getRotateY() const {
-			return this->rotY;
-		}
-
-		Node* setRotateZ(const float& amount) {
+		const Node* rotateZ(const float& amount) {
 			this->rotZ = amount;
+			model = math::rotateZ(this->rotZ) * model;
 			return this;
 		}
 
-		const Math::mat4 getModelMatrix() const {
-			return Math::rotateY(this->rotY);
+		const math::mat4& getModelMatrix() const {
+			return model;
 		}
 	};
 

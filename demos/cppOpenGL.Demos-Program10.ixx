@@ -17,7 +17,7 @@ import GLFWUtil;
 import GLSLUtil;
 import IOUtil;
 import Scene;
-import Math;
+import helios.math;
 
 using namespace std;
 
@@ -50,18 +50,18 @@ void controlNode(Scene::Node& node, GLFWwindow* window) {
 		GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_UP, GLFW_KEY_DOWN
 	};
 
-	static float amount = (5 * M_PI / 180);
-	static float mod = 2 * M_PI;
+	static float amount = 5;
+	static float mod = 360;
 
 	for (int KEY : KEYS) {
 		if (!PRESSED_KEY  && glfwGetKey(window, KEY) == GLFW_PRESS) {
 			PRESSED_KEY = KEY;
 			switch (KEY) {
 				case GLFW_KEY_LEFT:
-					node.setRotateY(fmod((node.getRotateY() + amount), mod));
+					node.rotateY(amount);
 					break;
 				case GLFW_KEY_RIGHT:
-					node.setRotateY(fmod((node.getRotateY() - amount), mod));
+					node.rotateY(amount);
 					break;
 			}
 			return;
